@@ -31,6 +31,35 @@ class Students{
         $this->address = $dataRow['address'] ?? null;
         $this->department = $dataRow['department'] ?? null;
     }
+
+    public function createStudent(){
+        $query = "INSERT INTO ". $this->table_name ." 
+                    SET
+                        name = :name,  
+                        age = :age, 
+                        address = :address,
+                        department = :department";
+        
+        $stmt = $this->conn->prepare($query);
+    
+        // sanitize
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->age=htmlspecialchars(strip_tags($this->age));
+        $this->address=htmlspecialchars(strip_tags($this->address));
+        $this->department=htmlspecialchars(strip_tags($this->department));
+
+        // bind data
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":age", $this->age);
+        $stmt->bindParam(":address", $this->address);
+        $stmt->bindParam(":department", $this->department);
+    
+        if($stmt->execute()){
+            return true;
+        }
+        return false;
+
+    }
 }
 
 ?>
